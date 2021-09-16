@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class ToDoServiceConfig {
+class ToDoServiceConfig {
     @Bean
     UuidGenerator uuidGenerator(){
         return new UuidGenerator();
