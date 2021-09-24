@@ -4,9 +4,7 @@ package guide.springboot.sample.todos.springdata;
 import guide.springboot.sample.todos.ToDoStatus;
 import org.hibernate.annotations.Type;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.UUID;
 
 @Entity
@@ -14,6 +12,7 @@ import java.util.UUID;
 class ToDoEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
     private String details;
     private ToDoStatus status;
