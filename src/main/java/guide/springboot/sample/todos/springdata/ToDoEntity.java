@@ -1,14 +1,12 @@
 package guide.springboot.sample.todos.springdata;
 
-
 import guide.springboot.sample.todos.ToDoStatus;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.UUID;
 
 @Entity
-@Table(name = "todos")
+@Table(name = "tasks")
 class ToDoEntity {
 
     @Id

@@ -47,7 +47,7 @@ public class ToDoSpringDataService implements ToDoService {
     public Optional<ToDoAttributes> select(final UUID id){
         final var todoEntity = toDoSpringDataRepository.findById(id);
 
-        return todoEntity.map(ToDoSpringDataService::toToDoAttribute);
+        return todoEntity.map(ToDoSpringDataService::toToDoAttributes);
     }
 
     @Override
@@ -64,10 +64,8 @@ public class ToDoSpringDataService implements ToDoService {
 //                .collect(Collectors.toUnmodifiableList());
         final var toDos = new ArrayList<ToDo>();
         for(var toDoEntity : toDoEntities){
-            System.out.println(toDoEntity);
             toDos.add(toToDo(toDoEntity));
         }
-        System.out.println(Collections.unmodifiableList(toDos));
         return Collections.unmodifiableList(toDos);
     }
 
@@ -78,7 +76,7 @@ public class ToDoSpringDataService implements ToDoService {
     }
 
 
-    static ToDoAttributes toToDoAttribute(final ToDoEntity toDoEntity){
+    static ToDoAttributes toToDoAttributes(final ToDoEntity toDoEntity){
         return new ToDoAttributes(toDoEntity.getDetails(), toDoEntity.getStatus());
     }
 }

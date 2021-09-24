@@ -11,21 +11,8 @@ public interface ToDoService {
 
     // Optional<ToDo> select(final ToDoIdentifier identifier);
     Optional<ToDoAttributes> select(UUID id);
+    // Optional: T type을 감싸는 wrapper
 
     List<ToDo> selectAll();
 
-    class NoEntityException extends RuntimeException {
-
-        public NoEntityException() {
-            super();
-        }
-
-        public NoEntityException(final Throwable e) {
-            super(e);
-        }
-
-        public NoEntityException(final String message) {
-            super(message);
-        }
-    }
 }

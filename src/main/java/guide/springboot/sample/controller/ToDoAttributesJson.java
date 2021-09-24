@@ -1,24 +1,46 @@
 package guide.springboot.sample.controller;
+//
+//import com.fasterxml.jackson.annotation.JsonCreator;
+//import com.fasterxml.jackson.annotation.JsonProperty;
+//
+//public class ToDoAttributesJson {
+//    // GET {id}를 하면 id를 빼고 보여줌/  details & status
+//    private final String details;
+//    private final String status;
+//
+//    @JsonCreator
+//    public ToDoAttributesJson(
+//            @JsonProperty("details") final String details,
+//            @JsonProperty("status") final String status
+//    ){
+//        System.out.println("run constructor...");
+//        this.details = details;
+//        this.status = status;
+//    }
+//
+//    String getDetails(){
+//        return details;
+//    }
+//    String getStatus() { return status; }
+//}
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
+
+import static java.util.Objects.requireNonNull;
 
 public class ToDoAttributesJson {
-    // GET {id}를 하면 id를 빼고 보여줌/  details & status
     private final String details;
     private final String status;
 
-    @JsonCreator
-    ToDoAttributesJson(
-            @JsonProperty("details") final String details,
-            @JsonProperty("status") final String status
-    ){
-        this.details = details;
-        this.status = status;
+    ToDoAttributesJson(final String details, final String status) {
+        this.details = requireNonNull(details);
+        this.status = requireNonNull(status);
     }
 
-    String getDetails(){
+    public String getDetails() {
         return details;
     }
-    String getStatus() { return status; }
+
+    public String getStatus() {
+        return status;
+    }
 }

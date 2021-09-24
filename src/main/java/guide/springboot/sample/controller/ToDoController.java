@@ -1,5 +1,6 @@
 package guide.springboot.sample.controller;
 
+import ch.qos.logback.core.net.SyslogOutputStream;
 import guide.springboot.sample.todos.*;
 import guide.springboot.sample.todos.ToDoService;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -48,6 +49,19 @@ class ToDoController {
         final var toDoId = UUID.fromString(toDoIdString);
 
         final var toDo = toDoService.select(toDoId);
+        System.out.println(toDoIdString);
+        System.out.println(toDoId);
+        System.out.println(toDo.get());
+        System.out.println(toDo.get().getDetails());
+        System.out.println(toDo.get().getStatus());
+        System.out.println(toDo.get().getStatus().name().toLowerCase(Locale.ENGLISH));
+
+//        var temp = toDo.map(ToDoController::toToDoAttributeResponse);
+
+//        System.out.println(temp);
+//        System.out.println(temp.get().getDetails());
+//        System.out.println(temp.get().getStatus());
+
 
         return ResponseEntity.of(toDo.map(ToDoController::toToDoAttributeResponse));
     }
