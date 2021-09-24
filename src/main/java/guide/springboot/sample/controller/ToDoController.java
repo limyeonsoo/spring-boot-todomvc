@@ -19,8 +19,8 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/tasks")
-@Validated
-@SpringBootApplication(scanBasePackages={"guide.springboot.sample.todos"})
+// @Validated
+// @SpringBootApplication(scanBasePackages={"guide.springboot.sample.todos"})
 class ToDoController {
     private final ToDoService toDoService;
 
@@ -41,34 +41,31 @@ class ToDoController {
     }
 
     @GetMapping("/{id}")
-    ResponseEntity<ToDoAttributesJson> getAttRequest(@PathVariable("id") final String todoIdString){
-//        final var todoId = UUID.fromString(todoIdString);
+    ResponseEntity<ToDoAttributesJson> getAttRequest(
+            @PathVariable("id")
+            final String toDoIdString
+    ){
+        final var toDoId = UUID.fromString(toDoIdString);
 
-        final var todoAttribute = toDoService.select(todoIdString);
+        final var toDo = toDoService.select(toDoId);
 
-        return ResponseEntity.of(todoAttribute.map(ToDoController::toToDoAttributeResponse));
+        return ResponseEntity.of(toDo.map(ToDoController::toToDoAttributeResponse));
     }
 
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    ToDoIdentifierJson create(@Valid @RequestBody final ToDoAttributesDetailsJson booAttributesJson){
+    ToDoIdResponse create(@Valid @RequestBody final ToDoAttributesDetailsJson booAttributesJson){
         //final var request = new ToDoAttributes((booAttributesJson.getDetails()));
         final var request = new ToDoInsertAttribute(booAttributesJson.getDetails());
         final var identifier = toDoService.insert(request);
-        return new ToDoIdentifierJson(new ToDo(identifier, request.getDetails(), ToDoStatus.ACTIVE));
-    }
 
-    static Map<String, String> toModel(final ToDo todo){
-        return Map.of(
-                "id", todo.getId(),
-                "detail", todo.getDetails(),
-                "status", todo.getStatus().name()
-        );
+        return toToDoIdResponse(identifier);
     }
 
     static ToDoJson toToDoJson(final ToDo todo){
-        return new ToDoJson(todo.getId(),
+        return new ToDoJson(
+                todo.getId().toString(),
                 todo.getDetails(),
                 todo.getStatus().name().toLowerCase(Locale.ENGLISH));
     }
@@ -80,4 +77,7 @@ class ToDoController {
         );
     }
 
+    static ToDoIdResponse toToDoIdResponse(final UUID id){
+        return new ToDoIdResponse(id.toString());
+    }
 }

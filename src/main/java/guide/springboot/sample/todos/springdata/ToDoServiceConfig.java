@@ -7,19 +7,16 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 class ToDoServiceConfig {
-    @Bean
-    UuidGenerator uuidGenerator(){
-        return new UuidGenerator();
-    }
+//    @Bean
+//    UuidGenerator uuidGenerator(){
+//        return new UuidGenerator();
+//    }
 
     @Bean
     ToDoService toDoService(
-            final ToDoSpringDataRepository toDoSpringDataRepository,
-            final UuidGenerator uuidGenerator
+            final ToDoSpringDataRepository toDoSpringDataRepository
+            // final UuidGenerator uuidGenerator
     ){
-        return new ToDoSpringDataService(
-                toDoSpringDataRepository,
-                uuidGenerator
-        );
+        return new ToDoSpringDataService(toDoSpringDataRepository);
     }
 }

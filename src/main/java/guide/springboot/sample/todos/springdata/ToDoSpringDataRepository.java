@@ -11,4 +11,4 @@ import java.util.UUID;
 //}
 
 // JpaRepository extends PagingAndSortingRepository which in turn extends CrudRepository.
-interface ToDoSpringDataRepository extends CrudRepository<ToDoEntity, String>{ }
+interface ToDoSpringDataRepository extends CrudRepository<ToDoEntity, UUID>{ }

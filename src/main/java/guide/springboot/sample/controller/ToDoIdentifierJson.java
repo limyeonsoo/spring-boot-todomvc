@@ -2,13 +2,15 @@ package guide.springboot.sample.controller;
 
 import guide.springboot.sample.todos.ToDo;
 
-public class ToDoIdentifierJson {
+import static java.util.Objects.requireNonNull;
+
+class ToDoIdentifierJson {
     private final String id;
     //private final String details;
     //private final String status;
 
-    ToDoIdentifierJson(final ToDo todo){
-        this.id = todo.getId();
+    ToDoIdentifierJson(final String id){
+        this.id = requireNonNull(id);
         //this.details = todo.getDetails();
         //this.status = todo.getStatus();
     }

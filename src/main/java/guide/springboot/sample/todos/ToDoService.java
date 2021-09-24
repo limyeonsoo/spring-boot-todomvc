@@ -5,12 +5,12 @@ import java.util.List;
 import java.util.UUID;
 
 public interface ToDoService {
-    ToDoIdentifier insert(final ToDoInsertAttribute attributes);
+    UUID insert(final ToDoInsertAttribute attributes);
 
     // void delete(final ToDoIdentifier identifier);
 
     // Optional<ToDo> select(final ToDoIdentifier identifier);
-    Optional<ToDoAttributes> select(String id);
+    Optional<ToDoAttributes> select(UUID id);
 
     List<ToDo> selectAll();
 

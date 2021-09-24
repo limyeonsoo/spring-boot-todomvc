@@ -8,15 +8,15 @@ import java.util.stream.Collectors;
 
 public class ToDoSpringDataService implements ToDoService {
     private final ToDoSpringDataRepository toDoSpringDataRepository;
-    private final UuidGenerator uuidGenerator;
+    //private final UuidGenerator uuidGenerator;
 
 
     ToDoSpringDataService(
-            final ToDoSpringDataRepository toDoSpringDataRepository,
-            final UuidGenerator uuidGenerator
+            final ToDoSpringDataRepository toDoSpringDataRepository
+           // final UuidGenerator uuidGenerator
     ){
         this.toDoSpringDataRepository = toDoSpringDataRepository;
-        this.uuidGenerator = uuidGenerator;
+       // this.uuidGenerator = uuidGenerator;
     }
 
 //    static ToDo toService(final ToDoEntity entity){
@@ -26,13 +26,14 @@ public class ToDoSpringDataService implements ToDoService {
 //    }
 
     @Override
-    public ToDoIdentifier insert(final ToDoInsertAttribute attributes){
-        final var id = uuidGenerator.generateUuidString();
-        final var entity = new ToDoEntity(id, attributes.getDetails(), ToDoStatus.ACTIVE);
+    public UUID insert(final ToDoInsertAttribute attributes){
+        //final var id = uuidGenerator.generateUuidString();
+
+        final var entity = new ToDoEntity(attributes.getDetails(), ToDoStatus.ACTIVE);
 
         final var saved = toDoSpringDataRepository.save(entity);
 
-        return new ToDoIdentifier(saved.getId());
+        return saved.getId();
     }
 
 //    @Override
@@ -43,7 +44,7 @@ public class ToDoSpringDataService implements ToDoService {
 //                //.map(ToDoSpringDataService::toService);
 //    }
     @Override
-    public Optional<ToDoAttributes> select(final String id){
+    public Optional<ToDoAttributes> select(final UUID id){
         final var todoEntity = toDoSpringDataRepository.findById(id);
 
         return todoEntity.map(ToDoSpringDataService::toToDoAttribute);
@@ -71,11 +72,9 @@ public class ToDoSpringDataService implements ToDoService {
     }
 
     static ToDo toToDo(final ToDoEntity todoEntity){
-        final var identifier = new ToDoIdentifier((todoEntity.getId()));
-        System.out.println(identifier);
-        System.out.println(todoEntity.getDetails());
-        System.out.println(todoEntity.getStatus());
-        return new ToDo(identifier, todoEntity.getDetails(), todoEntity.getStatus());
+        final var toDoID = todoEntity.getId();
+
+        return new ToDo(toDoID, todoEntity.getDetails(), todoEntity.getStatus());
     }
 
 

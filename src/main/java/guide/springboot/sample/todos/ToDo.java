@@ -3,17 +3,18 @@ package guide.springboot.sample.todos;
 import guide.springboot.sample.lang.UuidGenerator;
 
 import java.util.Objects;
+import java.util.UUID;
 
 public class ToDo {
-    private final ToDoIdentifier identifier;
+    private final UUID id;
     private final String details;
     private final ToDoStatus status;
 
-    public ToDo(final ToDoIdentifier identifier, final String details, final ToDoStatus status){
-        var uuidGenerator = new UuidGenerator();
+    public ToDo(final UUID id, final String details, final ToDoStatus status){
+       // var uuidGenerator = new UuidGenerator();
 
         //this.identifier = uuidGenerator.generateUuidString();
-        this.identifier = identifier;
+        this.id = id;
         this.details = details;
         this.status = status;
     }
@@ -27,9 +28,9 @@ public class ToDo {
 //    public String getIdentifier(){
 //        return this.identifier;
 //    }
-    public String getId(){
+    public UUID getId(){
 
-        return this.identifier.getValue();
+        return this.id;
     }
     public String getDetails(){
 
