@@ -1,19 +1,21 @@
 package guide.springboot.sample.controller;
 
-import guide.springboot.sample.todos.ToDo;
-import guide.springboot.sample.todos.ToDoAttributes;
-import guide.springboot.sample.todos.ToDoService;
+import guide.springboot.sample.todos.*;
 import guide.springboot.sample.todos.ToDoService;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/tasks")
@@ -27,41 +29,55 @@ class ToDoController {
     }
 
     @GetMapping
-    public List<ToDo> getRequest(){
+    List<ToDoJson> getRequest(){
         final var todos = toDoService.selectAll();
-
-
-//        String str = "";
-//
-//        for(ToDo td : todos){
-//            str += toJson(td);
-//        }
-        //return todos.toString().replaceAll("\\[|\\]", "").replaceAll(", ",", ");
-        return todos;
+//        System.out.println(todos);
+//        return todos.stream()
+//                .map(ToDoController::toJson)
+//                .collect(Collectors.toUnmodifiableList());
+        return todos.stream()
+                .map(ToDoController::toToDoJson)
+                .collect(Collectors.toUnmodifiableList());
     }
+
+    @GetMapping("/{id}")
+    ResponseEntity<ToDoAttributesJson> getAttRequest(@PathVariable("id") final String todoIdString){
+//        final var todoId = UUID.fromString(todoIdString);
+
+        final var todoAttribute = toDoService.select(todoIdString);
+
+        return ResponseEntity.of(todoAttribute.map(ToDoController::toToDoAttributeResponse));
+    }
+
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    ToDoIdentifierJson create(@Valid @RequestBody final ToDoAttributesJson booAttributesJson){
-        final var request = new ToDoAttributes((booAttributesJson.getDetails()));
-
+    ToDoIdentifierJson create(@Valid @RequestBody final ToDoAttributesDetailsJson booAttributesJson){
+        //final var request = new ToDoAttributes((booAttributesJson.getDetails()));
+        final var request = new ToDoInsertAttribute(booAttributesJson.getDetails());
         final var identifier = toDoService.insert(request);
-
-        return new ToDoIdentifierJson(new ToDo(identifier, request.getDetails(), "active"));
-
+        return new ToDoIdentifierJson(new ToDo(identifier, request.getDetails(), ToDoStatus.ACTIVE));
     }
 
     static Map<String, String> toModel(final ToDo todo){
         return Map.of(
                 "id", todo.getId(),
                 "detail", todo.getDetails(),
-                "status", todo.getStatus()
+                "status", todo.getStatus().name()
         );
     }
 
-    static ToDoJson toJson(final ToDo todo){
-        final var id = todo.getId();
-        return new ToDoJson(id, todo.getDetails(), todo.getStatus());
+    static ToDoJson toToDoJson(final ToDo todo){
+        return new ToDoJson(todo.getId(),
+                todo.getDetails(),
+                todo.getStatus().name().toLowerCase(Locale.ENGLISH));
+    }
+
+    static ToDoAttributesJson toToDoAttributeResponse(final ToDoAttributes todo){
+        return new ToDoAttributesJson(
+                todo.getDetails(),
+                todo.getStatus().name().toLowerCase(Locale.ENGLISH)
+        );
     }
 
 }

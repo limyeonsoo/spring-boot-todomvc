@@ -1,13 +1,9 @@
 package guide.springboot.sample.todos.springdata;
 
 import guide.springboot.sample.lang.UuidGenerator;
-import guide.springboot.sample.todos.ToDo;
-import guide.springboot.sample.todos.ToDoAttributes;
-import guide.springboot.sample.todos.ToDoIdentifier;
-import guide.springboot.sample.todos.ToDoService;
+import guide.springboot.sample.todos.*;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ToDoSpringDataService implements ToDoService {
@@ -23,38 +19,67 @@ public class ToDoSpringDataService implements ToDoService {
         this.uuidGenerator = uuidGenerator;
     }
 
-    static ToDo toService(final ToDoEntity entity){
-        final var identifier = new ToDoIdentifier((entity.getId()));
-
-        return new ToDo(identifier, entity.getDetails(), entity.getStatus());
-    }
+//    static ToDo toService(final ToDoEntity entity){
+//        final var identifier = new ToDoIdentifier((entity.getId()));
+//
+//        return new ToDo(identifier, entity.getDetails(), entity.getStatus());
+//    }
 
     @Override
-    public ToDoIdentifier insert(final ToDoAttributes attributes){
+    public ToDoIdentifier insert(final ToDoInsertAttribute attributes){
         final var id = uuidGenerator.generateUuidString();
-        final var entity = new ToDoEntity(id, attributes.getDetails(), "active");
+        final var entity = new ToDoEntity(id, attributes.getDetails(), ToDoStatus.ACTIVE);
 
         final var saved = toDoSpringDataRepository.save(entity);
 
         return new ToDoIdentifier(saved.getId());
     }
 
+//    @Override
+//    public Optional<ToDoAttributes> select(final ToDoIdentifier identifier){
+//        final var id = identifier.getValue();
+//
+//        return toDoSpringDataRepository.findById(id);
+//                //.map(ToDoSpringDataService::toService);
+//    }
     @Override
-    public Optional<ToDo> select(final ToDoIdentifier identifier){
-        final var id = identifier.getValue();
+    public Optional<ToDoAttributes> select(final String id){
+        final var todoEntity = toDoSpringDataRepository.findById(id);
 
-        return toDoSpringDataRepository.findById(id)
-                .map(ToDoSpringDataService::toService);
+        return todoEntity.map(ToDoSpringDataService::toToDoAttribute);
     }
 
     @Override
     public List<ToDo> selectAll(){
-        final var todos = toDoSpringDataRepository.findAll();
+//        final var todos = toDoSpringDataRepository.findAll();
+//        System.out.println(todos);
+//        return todos.stream()
+//                .map(ToDoSpringDataService::toToDo)
+//                .collect(Collectors.toUnmodifiableList());
+        final var toDoEntities = toDoSpringDataRepository.findAll();
 
-        return todos.stream()
-                .map(ToDoSpringDataService::toService)
-                .collect(Collectors.toUnmodifiableList());
+//        return todos.stream()
+//                .map(ToDoSpringDataService::toToDo)
+//                .collect(Collectors.toUnmodifiableList());
+        final var toDos = new ArrayList<ToDo>();
+        for(var toDoEntity : toDoEntities){
+            System.out.println(toDoEntity);
+            toDos.add(toToDo(toDoEntity));
+        }
+        System.out.println(Collections.unmodifiableList(toDos));
+        return Collections.unmodifiableList(toDos);
+    }
+
+    static ToDo toToDo(final ToDoEntity todoEntity){
+        final var identifier = new ToDoIdentifier((todoEntity.getId()));
+        System.out.println(identifier);
+        System.out.println(todoEntity.getDetails());
+        System.out.println(todoEntity.getStatus());
+        return new ToDo(identifier, todoEntity.getDetails(), todoEntity.getStatus());
     }
 
 
+    static ToDoAttributes toToDoAttribute(final ToDoEntity toDoEntity){
+        return new ToDoAttributes(toDoEntity.getDetails(), toDoEntity.getStatus());
+    }
 }

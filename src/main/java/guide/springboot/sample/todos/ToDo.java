@@ -7,9 +7,9 @@ import java.util.Objects;
 public class ToDo {
     private final ToDoIdentifier identifier;
     private final String details;
-    private final String status;
+    private final ToDoStatus status;
 
-    public ToDo(final ToDoIdentifier identifier, final String details, final String status){
+    public ToDo(final ToDoIdentifier identifier, final String details, final ToDoStatus status){
         var uuidGenerator = new UuidGenerator();
 
         //this.identifier = uuidGenerator.generateUuidString();
@@ -28,12 +28,15 @@ public class ToDo {
 //        return this.identifier;
 //    }
     public String getId(){
+
         return this.identifier.getValue();
     }
     public String getDetails(){
+
         return this.details;
     }
-    public String getStatus(){
+    public ToDoStatus getStatus(){
+
         return this.status;
     }
 
