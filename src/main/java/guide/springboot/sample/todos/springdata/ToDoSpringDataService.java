@@ -69,6 +69,19 @@ public class ToDoSpringDataService implements ToDoService {
         return Collections.unmodifiableList(toDos);
     }
 
+    @Override
+    public String delete(final String targetId){
+        final var targetUUID = UUID.fromString(targetId);
+        if(toDoSpringDataRepository.existsById(targetUUID)){
+            final var toDoEntity = toDoSpringDataRepository.findById(targetUUID);
+            toDoSpringDataRepository.deleteById(targetUUID);
+            System.out.println(toDoEntity.get().getDetails());
+            System.out.println(toDoEntity.get().getStatus().name());
+            return "Delete Success";
+        }
+        return "No Such Element";
+    }
+
     static ToDo toToDo(final ToDoEntity todoEntity){
         final var toDoID = todoEntity.getId();
 

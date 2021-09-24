@@ -66,7 +66,6 @@ class ToDoController {
         return ResponseEntity.of(toDo.map(ToDoController::toToDoAttributeResponse));
     }
 
-
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     ToDoIdResponse create(@Valid @RequestBody final ToDoAttributesDetailsJson booAttributesJson){
@@ -77,11 +76,24 @@ class ToDoController {
         return toToDoIdResponse(identifier);
     }
 
+    @DeleteMapping("/{id}")
+    ToDoStringJson delete(
+            @PathVariable("id")
+            final String toDoIdString
+    ){
+        final var delResult = toDoService.delete(toDoIdString);
+        System.out.println(delResult);
+        return toToDoStringJson(delResult);
+    }
+
     static ToDoJson toToDoJson(final ToDo todo){
         return new ToDoJson(
                 todo.getId().toString(),
                 todo.getDetails(),
                 todo.getStatus().name().toLowerCase(Locale.ENGLISH));
+    }
+    static ToDoStringJson toToDoStringJson(final String res){
+        return new ToDoStringJson(res);
     }
 
     static ToDoAttributesJson toToDoAttributeResponse(final ToDoAttributes todo){

@@ -7,7 +7,7 @@ import java.util.UUID;
 public interface ToDoService {
     UUID insert(final ToDoInsertAttribute attributes);
 
-    // void delete(final ToDoIdentifier identifier);
+    String delete(final String targetId);
 
     // Optional<ToDo> select(final ToDoIdentifier identifier);
     Optional<ToDoAttributes> select(UUID id);
