@@ -82,6 +82,18 @@ public class ToDoSpringDataService implements ToDoService {
         return "No Such Element";
     }
 
+    @Override
+    public ToDoAttributes patch(final UUID id, final ToDoStatus status){
+        final var current = toDoSpringDataRepository.findById(id);
+
+        final var willUpdate = new ToDoEntity(id, current.get().getDetails(), status);
+
+        // 그냥 save를 하면 overwrite될까? => Persisting Entities
+        toDoSpringDataRepository.save(willUpdate);
+        return new ToDoAttributes(willUpdate.getDetails(), willUpdate.getStatus());
+    }
+
+
     static ToDo toToDo(final ToDoEntity todoEntity){
         final var toDoID = todoEntity.getId();
 

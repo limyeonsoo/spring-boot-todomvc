@@ -86,6 +86,25 @@ class ToDoController {
         return toToDoStringJson(delResult);
     }
 
+    // PathVariable + Body
+    @PatchMapping("/{id}")
+    ToDoAttributesJson patch(
+            @PathVariable("id") final String toDoIdString,
+            @Valid @RequestBody final ToDoStatusRequestJson req
+    ){
+        final var toDoUUID = UUID.fromString(toDoIdString);
+        final var result = toDoService.patch(toDoUUID, ToDoStatus.valueOf(req.getStatus().toUpperCase(Locale.ENGLISH)));
+
+        System.out.println(req);
+        System.out.println(toDoUUID);
+        System.out.println(result);
+
+        return new ToDoAttributesJson(
+                result.getDetails(),
+                result.getStatus().name().toLowerCase(Locale.ENGLISH)
+        );
+    }
+
     static ToDoJson toToDoJson(final ToDo todo){
         return new ToDoJson(
                 todo.getId().toString(),
