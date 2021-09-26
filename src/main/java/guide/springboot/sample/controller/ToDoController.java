@@ -1,20 +1,14 @@
 package guide.springboot.sample.controller;
 
-import ch.qos.logback.core.net.SyslogOutputStream;
 import guide.springboot.sample.todos.*;
 import guide.springboot.sample.todos.ToDoService;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -90,20 +84,26 @@ class ToDoController {
     @PatchMapping("/{id}")
     ToDoAttributesJson patch(
             @PathVariable("id") final String toDoIdString,
-            @Valid @RequestBody final ToDoStatusRequestJson req
+            @RequestBody final ToDoPatchReqJson req
     ){
         final var toDoUUID = UUID.fromString(toDoIdString);
-        final var result = toDoService.patch(toDoUUID, ToDoStatus.valueOf(req.getStatus().toUpperCase(Locale.ENGLISH)));
 
-        System.out.println(req);
-        System.out.println(toDoUUID);
-        System.out.println(result);
+        final var result = toDoService.patch(
+                toDoUUID,
+                req.getDetails(),
+                toToDoStatus(req.getStatus()) // 예외처리 필요 => toToDoStatus
+        );
 
         return new ToDoAttributesJson(
                 result.getDetails(),
                 result.getStatus().name().toLowerCase(Locale.ENGLISH)
         );
     }
+
+//    ToDoJson update(
+//            @Pathvariable("id") final String toDoIdString,
+//            @Valid @RequestBody final To
+//    )
 
     static ToDoJson toToDoJson(final ToDo todo){
         return new ToDoJson(
@@ -124,5 +124,13 @@ class ToDoController {
 
     static ToDoIdResponse toToDoIdResponse(final UUID id){
         return new ToDoIdResponse(id.toString());
+    }
+
+    static ToDoStatus toToDoStatus(final String taskStatusString) {
+        try {
+            return ToDoStatus.valueOf(taskStatusString.toUpperCase(Locale.ENGLISH));
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

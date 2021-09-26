@@ -14,7 +14,9 @@ public interface ToDoService {
 
     String delete(final String targetId);
 
-    ToDoAttributes patch(UUID id, ToDoStatus status);
+    ToDo update(UUID id, String details, ToDoStatus status);
+
+    ToDoAttributes patch(UUID id, String details, ToDoStatus status);
 
 
 }

@@ -6,6 +6,8 @@ import guide.springboot.sample.todos.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static java.util.Objects.requireNonNullElse;
+
 public class ToDoSpringDataService implements ToDoService {
     private final ToDoSpringDataRepository toDoSpringDataRepository;
     //private final UuidGenerator uuidGenerator;
@@ -83,16 +85,29 @@ public class ToDoSpringDataService implements ToDoService {
     }
 
     @Override
-    public ToDoAttributes patch(final UUID id, final ToDoStatus status){
+    public ToDoAttributes patch(final UUID id, String details, ToDoStatus status){
         final var current = toDoSpringDataRepository.findById(id);
 
-        final var willUpdate = new ToDoEntity(id, current.get().getDetails(), status);
+        final var willUpdate = new ToDoEntity(
+                id,
+                requireNonNullElse(details, current.get().getDetails()),
+                requireNonNullElse(status, current.get().getStatus())
+        );
 
         // 그냥 save를 하면 overwrite될까? => Persisting Entities
         toDoSpringDataRepository.save(willUpdate);
         return new ToDoAttributes(willUpdate.getDetails(), willUpdate.getStatus());
     }
 
+    @Override
+    public ToDo update(UUID id, String details, ToDoStatus status) {
+
+        final var updated = new ToDoEntity(id, details, status);
+
+        toDoSpringDataRepository.save(updated);
+
+        return new ToDo(updated.getId(), updated.getDetails(), updated.getStatus());
+    }
 
     static ToDo toToDo(final ToDoEntity todoEntity){
         final var toDoID = todoEntity.getId();
