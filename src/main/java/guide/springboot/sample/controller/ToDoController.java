@@ -100,10 +100,25 @@ class ToDoController {
         );
     }
 
-//    ToDoJson update(
-//            @Pathvariable("id") final String toDoIdString,
-//            @Valid @RequestBody final To
-//    )
+    @PutMapping("/{id}")
+    ToDoJson update(
+            @PathVariable("id") final String toDoIdString,
+            @RequestBody final ToDoUpdateReqJson req
+    ){
+        final var toDoUUID = UUID.fromString(toDoIdString);
+
+        final var result = toDoService.update(
+                toDoUUID,
+                req.getDetails(),
+                toToDoStatus(req.getStatus())
+        );
+
+        return new ToDoJson(
+                result.getId().toString(),
+                result.getDetails(),
+                result.getStatus().name().toLowerCase(Locale.ENGLISH)
+        );
+    }
 
     static ToDoJson toToDoJson(final ToDo todo){
         return new ToDoJson(
