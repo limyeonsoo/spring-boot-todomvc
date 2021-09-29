@@ -100,6 +100,7 @@ class ToDoController {
         );
     }
 
+    // https://stackoverflow.com/questions/19732423/why-isnt-http-put-allowed-to-do-partial-updates-in-a-rest-api
     @PutMapping("/{id}")
     ToDoJson update(
             @PathVariable("id") final String toDoIdString,
